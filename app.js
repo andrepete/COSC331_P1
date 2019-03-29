@@ -2,6 +2,9 @@ const express = require('express')
 const app = express()
 const port = 3000
 
+var mysql = require('mysql')
+
+
 app.get('/', (req, res) => res.send('Hello World!'))
 app.get('/documents', (req, res) => res.send('Sent a get request to documents'))
 app.post('/', (req, res) => res.send('Post request at root'))
