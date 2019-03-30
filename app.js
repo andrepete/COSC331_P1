@@ -1,8 +1,7 @@
 const express = require('express')
+var mysql = require('mysql')
 const app = express()
 const port = 3000
-
-var mysql = require('mysql')
 
 
 app.get('/', (req, res) => res.send('Hello World!'))
