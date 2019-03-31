@@ -11,7 +11,15 @@ var con = mysql.createConnection({
 });
 
 
-app.get('/students', (req, res) => res.send('Hello World!'))
+app.get('/get-student-info', (req, res) => {
+    con.connect(function (err){
+        if(err) throw err;
+        con.query("SELECT * FROM students WHERE id = '12'", function(err, result){
+            if(err) throw err;
+            res.send(result);
+        });
+    });
+})
 
 app.post('/create-student', (req, res) => {
     con.connect(function(err){
@@ -25,8 +33,29 @@ app.post('/create-student', (req, res) => {
     });
 })
 
-app.put('/', (req, res) => res.send('Got a put request at /user'))
-app.patch('/', (req, res) => res.send('Got a patch request at /user'))
-app.delete('/', (req, res) => res.send('Got a delete request at /user'))
+app.put('/', (req, res) => {
+    
+})
+
+app.patch('/change-major', (req, res) => {
+    con.connect(function(err){
+        if(err) throw err;
+        con.query("UPDATE students SET major = 'IT' WHERE id = '12'", function(err, result){
+            if(err) throw err;
+            res.send("Major updated");
+        });
+    });
+})
+
+app.delete('/delete-student', (req, res) => {
+    con.connect(function(err){
+        if(err) throw err;
+        con.query("DELETE FROM students WHERE id = '12'", function(err, result){
+            if(err) throw err;
+            res.send("Student Deleted");
+        });
+    });
+})
+
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
