@@ -1,8 +1,16 @@
+
 const express = require('express')
-var mysql = require('mysql')
 const app = express()
 const port = 3000
+var mysql = require('mysql')
+var bodyParser = require('body-parser')
 
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({
+    extended: true
+}));
+
+//create variable to connect to database
 var con = mysql.createConnection({
     host: "localhost",
     user: "andrepeter",
@@ -10,52 +18,51 @@ var con = mysql.createConnection({
     database: "mydatabase"
 });
 
+//connect to database
+con.connect(function(err){
+    if(err) throw err;
+    console.log("Connected")
+});
 
-app.get('/get-student-info', (req, res) => {
-    con.connect(function (err){
+//get request
+app.get('/', (req, res) => {
+    con.query("SELECT * FROM students WHERE id=?", req.body.id, function(err, result){
         if(err) throw err;
-        con.query("SELECT * FROM students WHERE id = '12'", function(err, result){
-            if(err) throw err;
-            res.send(result);
-        });
+        res.send(result);
     });
-})
+});
 
+//post request
 app.post('/create-student', (req, res) => {
-    con.connect(function(err){
-        if (err) throw err;
-        console.log("Connected!");
-        var sql = "INSERT INTO students (id, firstName, lastName, year, age, major, gpa) VALUES ('12', 'Andre', 'Petersheim', '2021', '19', 'CS', '4.0')";
-        con.query(sql, function(err, result){
-            if(err) throw err;
-            res.send("1 record inserted");
-        });
+    con.query("INSERT INTO students SET ?", req.body, function(err, result){
+        if(err) throw err;
+        res.send("Complete");
     });
-})
+});
 
+//put request
 app.put('/', (req, res) => {
-    
-})
+    con.query("UPDATE students SET firstName=?, lastName=?, year=?, age=?, major=?, gpa=? WHERE id=?", [req.body.firstName, req.body.lastName, req.body.year, req.body.age, req.body.major, req.body.gpa, req.body.id], function(err, result){
+        if(err) throw err;
+        res.send("Complete");
+    })
+});
 
+//patch request
 app.patch('/change-major', (req, res) => {
-    con.connect(function(err){
+    con.query("UPDATE students SET firstName = ? WHERE id = ?", [req.body.firstName, req.body.id], function(err, result){
         if(err) throw err;
-        con.query("UPDATE students SET major = 'IT' WHERE id = '12'", function(err, result){
-            if(err) throw err;
-            res.send("Major updated");
-        });
+        res.send("Complete");
     });
-})
+});
 
-app.delete('/delete-student', (req, res) => {
-    con.connect(function(err){
+//delete request
+app.delete('/', (req, res) => {
+    con.query("DELETE FROM students WHERE id=?", [req.body.id], function(err, result){
         if(err) throw err;
-        con.query("DELETE FROM students WHERE id = '12'", function(err, result){
-            if(err) throw err;
-            res.send("Student Deleted");
-        });
+        res.send("Complete");
     });
-})
+});
 
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+app.listen(port, () => console.log(`Example app listening on port ${port}!`));
