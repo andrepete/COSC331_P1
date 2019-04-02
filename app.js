@@ -33,7 +33,7 @@ app.get('/', (req, res) => {
 });
 
 //post request
-app.post('/create-student', (req, res) => {
+app.post('/', (req, res) => {
     con.query("INSERT INTO students SET ?", req.body, function(err, result){
         if(err) throw err;
         res.send("Complete");
@@ -49,7 +49,7 @@ app.put('/', (req, res) => {
 });
 
 //patch request
-app.patch('/change-major', (req, res) => {
+app.patch('/', (req, res) => {
     con.query("UPDATE students SET firstName = ? WHERE id = ?", [req.body.firstName, req.body.id], function(err, result){
         if(err) throw err;
         res.send("Complete");
